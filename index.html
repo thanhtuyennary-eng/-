@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday 🎂</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* FULL BACKGROUND */
+body {
+    background:
+        radial-gradient(circle at top, #3a0ca3, #03045e 70%),
+        linear-gradient(120deg, #ff758f, #ffb703);
+    animation: bgMove 12s ease-in-out infinite alternate;
+    color: #fff;
+}
+
+@keyframes bgMove {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(25deg); }
+}
+
+/* CARD */
+.card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.12);
+    padding: 55px 70px;
+    border-radius: 30px;
+    backdrop-filter: blur(12px);
+    text-align: center;
+    box-shadow: 0 0 60px rgba(255,200,255,0.4);
+    animation: pop 1.4s ease;
+}
+
+@keyframes pop {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    margin: 0;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #ffd166, #ff99c8);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+h2 {
+    font-size: 32px;
+    margin: 18px 0;
+    color: #ffe5ec;
+}
+
+p {
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+/* CANVAS */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="card">
+    <h1>Happy Birthday 🎉</h1>
+    <h2>Chúc VÂN VÂN một ngày thật rực rỡ</h2>
+    <p>Luôn hạnh phúc – thành công – tràn đầy yêu thương 💖</p>
+</div>
+
+<script>
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.radius = Math.random() * 3 + 1;
+        this.color = color;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 6 + 3;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.life = 100;
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.05;
+        this.life--;
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+}
+
+let particles = [];
+
+function boom(x, y) {
+    const colors = ["#ffbe0b", "#fb5607", "#ff006e", "#8338ec", "#3a86ff"];
+    for (let i = 0; i < 160; i++) {
+        particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+    }
+}
+
+function animate() {
+    ctx.fillStyle = "rgba(0,0,0,0.15)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particles = particles.filter(p => p.life > 0);
+    particles.forEach(p => {
+        p.update();
+        p.draw();
+    });
+
+    requestAnimationFrame(animate);
+}
+
+setInterval(() => {
+    boom(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height * 0.6
+    );
+}, 900);
+
+animate();
+</script>
+
+</body>
+</html>
